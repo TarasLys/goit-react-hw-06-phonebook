@@ -1,6 +1,18 @@
 import css from './Filter.module.css';
+import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 
-export const Filter = ({ value, onChange }) => {
+export const Filter = ({ value, onChange, onFilteredContactsChange }) => {
+  const contacts = useSelector(state => state.postDetails.contacts);
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(value.toLowerCase())
+  );
+
+  useEffect(() => {
+    onFilteredContactsChange(filteredContacts);
+  }, [filteredContacts, onFilteredContactsChange]);
+
   const handleChange = event => {
     onChange(event.target.value);
   };
@@ -18,4 +30,3 @@ export const Filter = ({ value, onChange }) => {
     </div>
   );
 };
-
