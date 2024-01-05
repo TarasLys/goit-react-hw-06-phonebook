@@ -1,13 +1,14 @@
 import css from './Filter.module.css';
 import { useSelector } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 export const Filter = ({ value, onChange, onFilteredContactsChange }) => {
   const contacts = useSelector(state => state.postDetails.contacts);
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(value.toLowerCase())
-  );
+  const filteredContacts = useMemo(() => 
+    contacts.filter(contact =>
+      contact.name.toLowerCase().includes(value.toLowerCase())
+    ), [contacts, value]);
 
   useEffect(() => {
     onFilteredContactsChange(filteredContacts);
@@ -30,3 +31,5 @@ export const Filter = ({ value, onChange, onFilteredContactsChange }) => {
     </div>
   );
 };
+
+
