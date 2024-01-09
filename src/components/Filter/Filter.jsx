@@ -1,21 +1,12 @@
 import css from './Filter.module.css';
-import { useSelector } from 'react-redux';
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setFilter } from '../../redux/postDetailReducer';
 
-export const Filter = ({ value, onChange, onFilteredContactsChange }) => {
-  const contacts = useSelector(state => state.postDetails.contacts);
-
-  const filteredContacts = useMemo(() => 
-    contacts.filter(contact =>
-      contact.name.toLowerCase().includes(value.toLowerCase())
-    ), [contacts, value]);
-
-  useEffect(() => {
-    onFilteredContactsChange(filteredContacts);
-  }, [filteredContacts, onFilteredContactsChange]);
-
-  const handleChange = event => {
-    onChange(event.target.value);
+const Filter = () => {
+  const dispatch = useDispatch();
+  const handleChange = e => {
+    dispatch(setFilter(e.currentTarget.value));
   };
 
   return (
@@ -24,12 +15,10 @@ export const Filter = ({ value, onChange, onFilteredContactsChange }) => {
       <input
         className={css.allInput}
         type="text"
-        value={value}
         onChange={handleChange}
         placeholder="Пошук контактів за ім'ям"
       />
     </div>
   );
 };
-
-
+export default Filter;

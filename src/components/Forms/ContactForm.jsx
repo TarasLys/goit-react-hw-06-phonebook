@@ -1,42 +1,47 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { setContacts } from '../../redux/postDetailReducer';
 
-export const ContactForm = ({ onNewContact }) => {
+export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
   const contacts = useSelector(state => state.postDetails.contacts);
-
-  const handleChange = event => {
-    const { name, value } = event.target;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-      default:
-        return;
-    }
-  };
+  const dispatch = useDispatch();
 
   const handleSubmit = e => {
     e.preventDefault();
-    const newContact = {
+
+    const newContacts = {
       id: nanoid(),
       name,
       number,
     };
+    console.log(newContacts);
+    contacts.some(el => el.name === newContacts.name)
+      ? alert(`${newContacts.name} is already in contact.`)
+      : dispatch(setContacts(newContacts));
 
-    const isDuplicated = contacts.find(el => el.name === newContact.name);
-    if (isDuplicated) return alert(`${newContact.name} is already in contact.`);
-
-    onNewContact(newContact);
+    NewContact();
+  };
+  const NewContact = () => {
     setName('');
     setNumber('');
+  };
+
+  const handleChange = e => {
+    switch (e.currentTarget.name) {
+      case 'name':
+        setName(e.currentTarget.value);
+        break;
+      case 'number':
+        setNumber(e.currentTarget.value);
+        break;
+      default:
+        return;
+    }
   };
 
   return (
@@ -65,11 +70,7 @@ export const ContactForm = ({ onNewContact }) => {
         <button className={css.btn} type="submit">
           Add contact
         </button>
-        <ul>
-          <li></li>
-        </ul>
       </div>
     </form>
   );
 };
-
